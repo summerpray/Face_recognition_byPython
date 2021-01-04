@@ -11,7 +11,7 @@ np.column_stack((a,b)) 增加一列
 '''
 import numpy as np
 from numpy import random
-np.set_printoptions(threshold=np.inf)
+#np.set_printoptions(threshold=np.inf)
 import matplotlib.pyplot as plt
 from pylab import *
 from PIL import Image
@@ -31,20 +31,25 @@ def read_img(path):
     img = array(img.convert('L'), 'f')
     arr = img.flatten()
     arr = list(map(int, arr))
-    mat = np.mat(arr)
+    mat = np.transpose(np.mat(arr))
     if (img_file == 1):
       matrix_all = mat
       matrix_average = mat
     else:
-      matrix_all = np.vstack((matrix_all,mat))
+      matrix_all = np.hstack((matrix_all,mat))
   return matrix_all
 
 def PCA(X):
-  X_T = np.transpose([X])
+  X_T = np.transpose(X)
+  #C是原始协方差矩阵
   C = (1 / X.shape[1]) * X * X_T
-  C = np.around(C, decimals=1)
+  #求出特征值eigenvalue，特征向量featurevector
   eigenvalue, featurevector = np.linalg.eig(C)
-  P = np.transpose([featurevector])
+  #featurevector_T = np.transpose([featurevector])
+  P = np.transpose(featurevector)
+  print(P.shape)
+
+
 
 
 if __name__ == "__main__":
@@ -55,5 +60,4 @@ if __name__ == "__main__":
   #print(m)
   c = read_img("F:/facialRec/test/test")
   PCA(c)
-
 
