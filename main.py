@@ -11,7 +11,7 @@ np.column_stack((a,b)) 增加一列
 '''
 import numpy as np
 from numpy import random
-#np.set_printoptions(threshold=np.inf)
+np.set_printoptions(threshold=np.inf)
 import matplotlib.pyplot as plt
 from pylab import *
 from PIL import Image
@@ -20,13 +20,12 @@ import os
 rd = np.random.RandomState(888)
 allFileNum = 0
 matrix_all = [ ]
-
+matrix_average = [ ]
 #os.listdir(path)
 
 #读入训练数据并且初始化
 def read_img(path):
   for img_file in range(1,51):
-    print(img_file)  # 打印当前读取的图片名
     # 以下代码根据需要更改
     img = Image.open(path + '/' + str(img_file) + '.pgm')  # 读取文件
     img = array(img.convert('L'), 'f')
@@ -35,18 +34,18 @@ def read_img(path):
     mat = np.mat(arr)
     if (img_file == 1):
       matrix_all = mat
+      matrix_average = mat
     else:
       matrix_all = np.vstack((matrix_all,mat))
-    print(matrix_all)
+  return matrix_all
 
+def PCA(X):
+  X_T = np.transpose([X])
+  C = (1 / X.shape[1]) * X * X_T
+  C = np.around(C, decimals=1)
+  eigenvalue, featurevector = np.linalg.eig(C)
+  P = np.transpose([featurevector])
 
-def showimg(img, isgray=False):
-  plt.axis("off")
-  if isgray == True:
-    plt.imshow(img, cmap='gray')
-  else:
-    plt.imshow(img)
-  plt.show()
 
 if __name__ == "__main__":
   #初始化图片，转化为矩阵
@@ -54,6 +53,7 @@ if __name__ == "__main__":
   #随机生成各激活值对应的权值
   #w = weight_init(a)
   #print(m)
-  read_img("F:/facialRec/test/test")
+  c = read_img("F:/facialRec/test/test")
+  PCA(c)
 
 
