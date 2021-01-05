@@ -52,24 +52,31 @@ def feature_cal(C):
 def PCA(X):
   #每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
   trainNumber, perTotal = X.shape
+  #mean(0)表示列平均值 mean(1)表示行平均值
   meanMatrix = X.mean(1)
+  #去中心化的数据集其实就是平均脸
   X = X - meanMatrix
   X_T = np.transpose(X)
   #C是原始协方差矩阵
   C = (1 / X.shape[1]) * X * X_T
-  #feature_cal(C)
-  feature_mat = Read_mat()
-  print(feature_mat,feature_mat.shape)
+  feature_space = np.mat(Read_mat())
+  print(feature_space,feature_space.shape)
+  #特征脸就是平均脸在K组正交基对应的特征空间上的投影
+  feature_face_all = feature_space * X
+  np.save('feature_face_all', np.array(feature_face_all))
+  print(feature_face_all,feature_face_all.shape)
   print('OK!')
 
 def Read_mat():
   a = np.load('feature_vector.npy')
   return a
 
-
+def figure_rec():
+  img = Image.open(path + '/' + str(img_file) + '.pgm')
 
 if __name__ == "__main__":
 
   c = read_img("F:/facialRec/test/test")
+
   PCA(c)
 
