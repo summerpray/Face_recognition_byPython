@@ -3,14 +3,13 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 def img_init():
-  img = Image.open('D:/Facial_Recognition/Face_recognition/rec/5.pgm')
+  img = Image.open('D:/Facial_Recognition/Face_recognition/rec/10.pgm')
   img = np.array(img.convert('L'), 'f')
   arr = np.transpose(np.mat(img.flatten()))
-  print(arr.shape)
   return arr
 
 def Read_mat():
-  a = np.load('feature_vector.npy')
+  a = np.load('feature_vector_noshape.npy')
   return a
 
 def Read_feature_all():
@@ -19,16 +18,17 @@ def Read_feature_all():
 
 if __name__ == "__main__":
   face = img_init()
-  face = face - face.mean(0)
-  print(face)
+  meanMatrix = np.load('meanMatrix.npy')
+  face = face - meanMatrix
   #读取特征空间基
   feature_space = np.mat(Read_mat())
   #读取特征脸数据
   feature_face_all = np.array(Read_feature_all())
-  feature_face = np.array(feature_space * face)
+  print(feature_face_all.shape)
+  feature_face = np.transpose(np.array(feature_space * face))
   dist = []
   for i in range(0,50):
-    dist.append(np.linalg.norm(feature_face - feature_face_all[i]))
+    dist.append(np.linalg.norm(feature_face - feature_face_all[:,i]))
   print(dist)
   sort_arr = np.argsort(dist)
   print(sort_arr)
