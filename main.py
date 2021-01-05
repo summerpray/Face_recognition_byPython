@@ -6,8 +6,6 @@ np.row_stack((a,b))    增加一行
 np.column_stack((a,b)) 增加一列
 
 #本项目使用PCA进行图像识别
-
-建立四个隐含层，用来识别左眼、右眼、鼻子、嘴巴
 '''
 import numpy as np
 from numpy import random
@@ -39,25 +37,39 @@ def read_img(path):
       matrix_all = np.hstack((matrix_all,mat))
   return matrix_all
 
+def feature_cal(C):
+  # 求出特征值eigenvalue，特征向量featurevector
+  eigenvalue, featurevector = np.linalg.eig(C)
+  print(featurevector.shape)
+  # 定义一个临时矩阵用来存储前K个特征向量
+  mat_temp = np.mat([])
+  mat_temp = featurevector[0]
+  for i in range(1, 50):
+    mat_temp = np.vstack((mat_temp, featurevector[i]))
+  mat_temp = np.array(mat_temp)
+  np.save('feature_vector', mat_temp)
+
 def PCA(X):
+  #每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
+  trainNumber, perTotal = X.shape
+  meanMatrix = X.mean(1)
+  X = X - meanMatrix
   X_T = np.transpose(X)
   #C是原始协方差矩阵
   C = (1 / X.shape[1]) * X * X_T
-  #求出特征值eigenvalue，特征向量featurevector
-  eigenvalue, featurevector = np.linalg.eig(C)
-  #featurevector_T = np.transpose([featurevector])
-  P = np.transpose(featurevector)
-  print(P.shape)
+  #feature_cal(C)
+  feature_mat = Read_mat()
+  print(feature_mat,feature_mat.shape)
+  print('OK!')
 
+def Read_mat():
+  a = np.load('feature_vector.npy')
+  return a
 
 
 
 if __name__ == "__main__":
-  #初始化图片，转化为矩阵
-  #a = img_init()
-  #随机生成各激活值对应的权值
-  #w = weight_init(a)
-  #print(m)
+
   c = read_img("F:/facialRec/test/test")
   PCA(c)
 
