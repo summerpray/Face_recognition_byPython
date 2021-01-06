@@ -19,10 +19,13 @@ allFileNum = 0
 matrix_all = [ ]
 matrix_average = [ ]
 rd = np.random.RandomState(888)
+# 保存特征脸的路径和数据集根目录
 savepath = 'D:/Facial_Recognition/Face_recognition/feature_face/'
 rootDir = 'D:/Facial_Recognition/Face_recognition/att_faces/'
-Pic_Num = 7
+Pic_Num = 7 # 每个数据集选取多少张图片
 K = 50 # 取前K个特征向量
+
+# 代码中有保存矩阵信息的语句可以根据是否需要更新矩阵来取消注释
 
 # 从训练样本中获取数据
 def get_train_img():
@@ -83,7 +86,7 @@ def feature_cal(C):
   for i in range(1, K):
     mat_temp = np.hstack((mat_temp, featurevector[:,i]))
   mat_temp = np.array(mat_temp)
-  np.save('feature_vector_7', mat_temp)
+  np.save('feature_vector', mat_temp)
 
 # 求特征脸并且输出
 def feature_face_out(feature_face):
@@ -108,7 +111,7 @@ def PCA(X):
   # 每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
   # mean(0)表示列平均值 mean(1)表示行平均值
   meanMatrix = X.mean(1)
-  #np.save('meanMatrix_7', meanMatrix)
+  #np.save('meanMatrix', meanMatrix)
   # 去中心化的数据集其实就是平均脸
   X = X - meanMatrix
   X_T = np.transpose(X)
@@ -121,7 +124,7 @@ def PCA(X):
   feature_space = np.mat(Read_mat())
   # 生成特征脸特征脸就是平均脸在K组正交基对应的特征空间上的投影
   feature_face_all = np.transpose(feature_space) * X
-  # np.save('feature_face_all_7', np.array(feature_face_all))
+  # np.save('feature_face_all', np.array(feature_face_all))
   # 还原脸
   feature_face = np.transpose((np.transpose(feature_space)).I * feature_face_all)
   # 生成特征脸
@@ -130,7 +133,7 @@ def PCA(X):
   print('OK!')
 
 def Read_mat():
-  feature_vector = np.load('feature_vector_7.npy')
+  feature_vector = np.load('feature_vector.npy')
   return feature_vector
 
 if __name__ == "__main__":

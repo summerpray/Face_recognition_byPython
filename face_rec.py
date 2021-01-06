@@ -1,24 +1,24 @@
+'''
+本文件用来识别
+从文件夹中导入识别数据集进行识别
+'''
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-def img_init():
-  img = Image.open('D:/Facial_Recognition/Face_recognition/rec/10.pgm')
-  img = np.array(img.convert('L'), 'f')
-  arr = np.transpose(np.mat(img.flatten()))
-  return arr
+img_num = 120 # 选取多少图片进行识别 最大值是mat_rec矩阵的列数
 
 def Read_mat():
-  a = np.load('feature_vector_7.npy')
-  return a
+  feature_vector = np.load('feature_vector.npy')
+  return feature_vector
 
 def Read_feature_all():
-  a = np.load('feature_face_all_7.npy')
-  return a
+  feature_face_all = np.load('feature_face_all.npy')
+  return feature_face_all
 
 if __name__ == "__main__":
-  meanMatrix = np.load('meanMatrix_7.npy')
-
+  # 读取去中心化值 训练集标签
+  meanMatrix = np.load('meanMatrix.npy')
   label_train = np.load('label_train.npy')
 
   # 读取识别矩阵
@@ -35,7 +35,7 @@ if __name__ == "__main__":
   feature_face = np.array(np.transpose(feature_space) * mat_rec)
   # 识别数据集一列为一个图片的投影
   sum = 0
-  for j in range(0,120):
+  for j in range(0,img_num):
     dist = []
     for i in range(0,280):
       dist.append(np.linalg.norm(feature_face[:,j] - feature_face_all[:,i]))
@@ -45,7 +45,7 @@ if __name__ == "__main__":
     #print('The label is :', label_train[sort_arr[0]])
     if (label_train[sort_arr[0]] == label_rec[j]):
       sum = sum + 1
-  rec_percent = float(sum / 120)
-  print('rec_num is: ', 120)
+  rec_percent = float(sum / img_num)
+  print('rec_num is: ', img_num)
   print('The correct is: ' , sum)
   print('correct_percent: {:.1f}%'.format(rec_percent*100))
