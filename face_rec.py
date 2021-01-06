@@ -3,7 +3,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 
 def img_init():
-  img = Image.open('D:/Facial_Recognition/Face_recognition/rec/10.pgm')
+  img = Image.open('D:/Facial_Recognition/Face_recognition/rec/7.pgm')
   img = np.array(img.convert('L'), 'f')
   arr = np.transpose(np.mat(img.flatten()))
   return arr

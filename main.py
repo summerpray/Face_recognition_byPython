@@ -32,13 +32,25 @@ def read_img(path):
     mat = np.transpose(np.mat(arr))
     if (img_file == 1):
       matrix_all = mat
-      matrix_average = mat
     else:
       matrix_all = np.hstack((matrix_all,mat))
   return matrix_all
 
+def feature_cal(C):
+  # 求出特征值eigenvalue，特征向量featurevector
+  eigenvalue, featurevector = np.linalg.eig(C)
+  print(featurevector.shape)
+  #定义一个临时矩阵用来存储前K个特征向量
+  mat_temp = np.mat([])
+  mat_temp = featurevector[0]
+  for i in range(1, 50):
+    mat_temp = np.vstack((mat_temp, featurevector[i]))
+  mat_temp = np.array(mat_temp)
+  np.save('feature_vector', mat_temp)
+
 def PCA(X):
   #每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
+
   np.save('X', X)
   trainNumber, perTotal = X.shape
   #mean(0)表示列平均值 mean(1)表示行平均值
@@ -49,28 +61,25 @@ def PCA(X):
   X_T = np.transpose(X)
   #C是原始协方差矩阵
   C = np.mat(((1 / X.shape[0]) * X * X_T))
-  #print(C,C.shape)
-  # 求出特征值eigenvalue，特征向量featurevector
-  #eigenvalue, featurevector = np.linalg.eig(C)
-  #print(featurevector.shape)
-  # 定义一个临时矩阵用来存储前K个特征向量
-  #mat_temp = np.mat([])
-  #mat_temp = featurevector[0]
-  #for i in range(1, 50):
-  #  mat_temp = np.vstack((mat_temp, featurevector[i]))
-  #mat_temp = np.array(mat_temp)
-  #np.save('feature_vector', mat_temp)
+  #求协方差矩阵的单位特征向量和特征值
+  #feature_cal(C)
+
+  #读取属于特征空间的基向量
   feature_space = Read_mat()
   #生成特征脸
   #for i in range(0,50):
-  #res = feature_space[0].reshape((92, 112))
-  #res = Image.fromarray(res)
-  #res = res.convert('L')
-  #res.save('outfile.png')
   #特征脸就是平均脸在K组正交基对应的特征空间上的投影
   feature_face_all = feature_space * X
-  np.save('feature_face_all', np.array(feature_face_all))
+  # 50 * 50 50 * 10304
+  feature_face = feature_face_all * X_T
+  #np.save('feature_face_all', np.array(feature_face_all))
   #print(feature_face_all,feature_face_all.shape)
+  image_array = feature_face[0].reshape((112, 92))
+  image_array = image_array / image_array.max()
+  img = Image.fromarray(np.uint8(image_array * 255), 'L')
+  img.save()
+  img.show()
+  print(image_array)
   print('OK!')
 
 def Read_mat():
