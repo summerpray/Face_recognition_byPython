@@ -19,67 +19,84 @@ rd = np.random.RandomState(888)
 allFileNum = 0
 matrix_all = [ ]
 matrix_average = [ ]
-#os.listdir(path)
 
-#读入训练数据并且初始化
-def read_img(path):
-  for img_file in range(1,51):
-    # 以下代码根据需要更改
-    img = Image.open(path + '/' + str(img_file) + '.pgm')  # 读取文件
-    img = array(img.convert('L'), 'f')
-    arr = img.flatten()
-    arr = list(map(int, arr))
-    mat = np.transpose(np.mat(arr))
-    if (img_file == 1):
-      matrix_all = mat
-    else:
-      matrix_all = np.hstack((matrix_all,mat))
+# 从训练样本中获取数据
+def get_train_img():
+  mat = np.mat([])
+  matrix_all = np.mat([])
+  # 获取该目录下所有的文件名称和目录名称
+  rootDir = 'D:/Facial_Recognition/Face_recognition/att_faces/'
+  for lists in os.listdir(rootDir):
+    print(lists)
+    listDir = rootDir + lists
+    i = 0
+    for img_num in os.listdir(listDir):
+      i += 1
+      if (i >7):
+        break
+      else:
+        arr = np.array([])
+        img = Image.open(listDir + '/' + str(i) + '.pgm')  # 读取文件
+        img = array(img.convert('L'), 'f')
+        arr = img.flatten()
+        arr = list(map(int, arr))
+        mat = np.transpose(np.mat(arr))
+        if (~any(matrix_all)):
+          matrix_all = mat
+        else:
+          matrix_all = np.hstack((matrix_all, mat))
   return matrix_all
+
 
 def feature_cal(C):
   # 求出特征值eigenvalue，特征向量featurevector
   eigenvalue, featurevector = np.linalg.eig(C)
-  print(featurevector.shape)
+  print('featurevector = ',featurevector.shape)
   #定义一个临时矩阵用来存储前K个特征向量
   mat_temp = np.mat([])
   mat_temp = featurevector[0]
-  for i in range(1, 50):
+  #取前K个特征向量
+  K = 50
+  for i in range(1, K):
     mat_temp = np.vstack((mat_temp, featurevector[i]))
   mat_temp = np.array(mat_temp)
-  np.save('feature_vector', mat_temp)
+  np.save('feature_vector_7', mat_temp)
+
+def feature_face_out(feature_face):
+  savepath = 'D:/Facial_Recognition/Face_recognition/feature_face/'
+  for img_num in range(0, 50):
+    savename = str(img_num + 1) + '.png'
+    image_array = feature_face[img_num].reshape((112, 92))
+    image_array = image_array / image_array.max()
+    img = Image.fromarray(np.uint8(image_array * 255), 'L')
+    img.save(os.path.join(savepath,savename))
+    img.show()
+
 
 def PCA(X):
   #每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
-
-  np.save('X', X)
-  trainNumber, perTotal = X.shape
-  #mean(0)表示列平均值 mean(1)表示行平均值
+  # mean(0)表示列平均值 mean(1)表示行平均值
   meanMatrix = X.mean(1)
-  np.save('meanMatrix', meanMatrix)
-  #去中心化的数据集其实就是平均脸
+  np.save('meanMatrix_7', meanMatrix)
+  # 去中心化的数据集其实就是平均脸
   X = X - meanMatrix
   X_T = np.transpose(X)
-  #C是原始协方差矩阵
+  # C是原始协方差矩阵
   C = np.mat(((1 / X.shape[0]) * X * X_T))
-  #求协方差矩阵的单位特征向量和特征值
-  #feature_cal(C)
+  # 求协方差矩阵的单位特征向量和特征值
+  feature_cal(C)
 
-  #读取属于特征空间的基向量
+  # 读取属于特征空间的基向量
   feature_space = Read_mat()
-  #生成特征脸
-  #for i in range(0,50):
-  #特征脸就是平均脸在K组正交基对应的特征空间上的投影
+  # 生成特征脸特征脸就是平均脸在K组正交基对应的特征空间上的投影
   feature_face_all = feature_space * X
   # 50 * 50 50 * 10304
+  # 还原脸
   feature_face = feature_face_all * X_T
-  #np.save('feature_face_all', np.array(feature_face_all))
-  #print(feature_face_all,feature_face_all.shape)
-  image_array = feature_face[0].reshape((112, 92))
-  image_array = image_array / image_array.max()
-  img = Image.fromarray(np.uint8(image_array * 255), 'L')
-  img.save()
-  img.show()
-  print(image_array)
+  # np.save('feature_face_all', np.array(feature_face_all))
+  # 生成特征脸
+  feature_face_out(feature_face)
+
   print('OK!')
 
 def Read_mat():
@@ -90,8 +107,7 @@ def figure_rec():
   img = Image.open(path + '/' + str(img_file) + '.pgm')
 
 if __name__ == "__main__":
-
-  c = read_img("F:/facialRec/test/test")
-
-  PCA(c)
+  a = get_train_img()
+  #print(a.shape)
+  PCA(a)
 
