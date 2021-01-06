@@ -130,15 +130,11 @@ def PCA(X):
   print('OK!')
 
 def Read_mat():
-  a = np.load('feature_vector_7.npy')
-  return a
-
-def figure_rec():
-  img = Image.open(path + '/' + str(img_file) + '.pgm')
+  feature_vector = np.load('feature_vector_7.npy')
+  return feature_vector
 
 if __name__ == "__main__":
   database = get_train_img()
   print(database.shape)
-  #np.save('label', label)
   PCA(database)
 
