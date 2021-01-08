@@ -110,6 +110,7 @@ def feature_face_out(feature_face):
 def PCA(X):
   # 每个维度去中心化 如果是拉成列那么行去中心化 反之则反之
   # mean(0)表示列平均值 mean(1)表示行平均值
+  #np.save('X', X)
   meanMatrix = X.mean(1)
   #np.save('meanMatrix', meanMatrix)
   # 去中心化的数据集其实就是平均脸
@@ -132,6 +133,7 @@ def PCA(X):
   feature_face_out(feature_face)
   print('OK!')
 
+# 读取特征向量的基
 def Read_mat():
   feature_vector = np.load('feature_vector.npy')
   return feature_vector
