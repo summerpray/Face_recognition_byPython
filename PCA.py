@@ -1,12 +1,14 @@
 '''
+Author: summerpray
+
+#本项目使用PCA进行图像识别
+每个人脸训练7张 可以在下面更改
 可能会用到的函数
+
 np.hstack((a,b)) a,b列合并
 np.vstack((a,b)) a,b行合并
 np.row_stack((a,b))    增加一行
 np.column_stack((a,b)) 增加一列
-
-#本项目使用PCA进行图像识别
-每个人脸训练7张 可以在下面更改
 '''
 import numpy as np
 from numpy import random

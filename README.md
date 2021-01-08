@@ -14,6 +14,7 @@
 - label_rec.npy/label_train.npy 存储识别/训练对应人脸标签
 - mat_rec.npy/mat_train.npy 存储人脸识别/训练集的矩阵
 - meanMatrix.npy 存储平均矩阵(用来去中心化)
+- X.npy 存储原始矩阵(多余) 
 
 ## 更新日志
 #### 2020.1.4
