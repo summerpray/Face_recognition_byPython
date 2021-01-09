@@ -19,16 +19,17 @@ def Read_feature_all():
   return feature_face_all
 
 # 稀疏表示
-def Sparse():
+def SRC():
   # 进行识别初始化
   mat = np.mat([])
   X = np.load('X.npy')
   label_train = np.load('label_train.npy')
   label_rec = np.load('label_rec.npy')
-  mat_train = np.load('mat_train.npy')
-  mat_rec = np.load('mat_rec.npy')
+  mat_train = np.mat(np.load('mat_train.npy'))
+  mat_rec = np.mat(np.load('mat_rec.npy'))
   # Ax = Y -> x = A_-1 * Y
-  mat = (np.mat(mat_train)).I * mat_rec
+  mat = (np.transpose(mat_train) * mat_train).I * np.transpose(mat_train) * mat_rec
+  # mat = (np.mat(mat_train)).I * mat_rec
   # 用来存储识别正确的照片数量
   sum = 0
   for i in range(0,img_num):
@@ -55,7 +56,7 @@ def Sparse():
 
   # 输出
   rec_percent = float(sum / img_num)
-  print('Sparse recognition:')
+  print('SRC recognition:')
   print('The correct is: ', sum)
   print('correct_percent: {:.1f}%'.format(rec_percent * 100))
   print(' ')
@@ -95,7 +96,7 @@ def PCA():
   print('correct_percent: {:.1f}%'.format(rec_percent*100))
   print(' ')
 
-def Sparse_PCA():
+def SRC_PCA():
   temp = []
   # 读取去中心化值 训练集标签
   meanMatrix = np.load('meanMatrix.npy')
@@ -134,16 +135,18 @@ def Sparse_PCA():
       sum = sum + 1
 
   rec_percent = float(sum / img_num)
-  print('Sparse_PCA recognition:')
+  print('SRC_PCA recognition:')
   print('The correct is: ', sum)
   print('correct_percent: {:.1f}%'.format(rec_percent * 100))
   print(' ')
 
+
+
 if __name__ == "__main__":
   print('rec_num is: ', img_num)
-  Sparse()
+  SRC()
   PCA()
-  Sparse_PCA()
+  SRC_PCA()
 
 
 
