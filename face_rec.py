@@ -8,7 +8,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-img_num = 120 # 选取多少图片进行识别 最大值是mat_rec矩阵的列数
+# img_num = 120 # 选取多少图片进行识别 最大值是mat_rec矩阵的列数
 
 def Read_mat():
   feature_vector = np.load('feature_vector.npy')
@@ -19,7 +19,7 @@ def Read_feature_all():
   return feature_face_all
 
 # 稀疏表示
-def SRC():
+def SRC(img_num):
   # 进行识别初始化
   mat = np.mat([])
   X = np.load('X.npy')
@@ -60,8 +60,9 @@ def SRC():
   print('The correct is: ', sum)
   print('correct_percent: {:.1f}%'.format(rec_percent * 100))
   print(' ')
+  return rec_percent
 
-def PCA():
+def PCA(img_num):
   # 读取去中心化值 训练集标签
   meanMatrix = np.load('meanMatrix.npy')
   label_train = np.load('label_train.npy')
@@ -95,8 +96,9 @@ def PCA():
   print('The correct is: ' , sum)
   print('correct_percent: {:.1f}%'.format(rec_percent*100))
   print(' ')
+  return rec_percent
 
-def SRC_PCA():
+def SRC_PCA(img_num):
   temp = []
   # 读取去中心化值 训练集标签
   meanMatrix = np.load('meanMatrix.npy')
@@ -139,14 +141,31 @@ def SRC_PCA():
   print('The correct is: ', sum)
   print('correct_percent: {:.1f}%'.format(rec_percent * 100))
   print(' ')
+  return rec_percent
 
-
+# 画出折线图
+def figure():
+  Y_SRC = [ ]
+  Y_PCA = [ ]
+  Y_SRC_PCA = [ ]
+  x = [ ]
+  for img_num in range(10,120):
+    Y_SRC.append(SRC(img_num))
+    Y_PCA.append(PCA(img_num))
+    Y_SRC_PCA.append(SRC_PCA(img_num))
+    x.append(img_num)
+  plt.plot(x,Y_SRC,label='SRC')
+  plt.plot(x,Y_PCA,label='PCA')
+  plt.plot(x, Y_SRC_PCA,label='SRC_PCA')
+  plt.xlabel('Random pic number')  # X轴标签
+  plt.ylabel("Recognition rate")  # Y轴标签
+  plt.title("SRC,PCA,SRC_PCA Recognition rate") #标题
+  plt.legend()
+  #在ipython的交互环境中需要这句话才能显示出来
+  plt.show()
 
 if __name__ == "__main__":
-  print('rec_num is: ', img_num)
-  SRC()
-  PCA()
-  SRC_PCA()
+  figure()
 
 
 
